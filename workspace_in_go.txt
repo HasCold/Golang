@@ -1,0 +1,24 @@
+
+pkg  -->>> Packages , Dependency  , Modulers
+bin  -->>> Binary folder,  when we build the code of our application from "go build" then all the files will be commited in this bin dir.
+src  -->>> Application files and folders
+
+Want to see all the commands of golang :- go --help
+
+. go bug  -->> Open the default browser and starts a new bug report. It also contain system in.
+. go build  -->> Compile Packages and Dependencies
+. go clean  -->> Remove unwanted things , object files and cached files.
+. go doc  --->>  show documentation for package or symbol
+. go env  -->> print GO environment information 
+. go fix  -->> upgrade or downgrade packages to use new APIs.
+. go fmt -->> gofmt (reformat) package sources.
+. go generate  -->>   generate go files by processing source
+. go get  -->> add dependencies to current module and install them  like  go get github.com/HasCold/.....
+. go install  -->>  compile and install packages and dependencies.
+. go list   -->> list packages or modules
+. go mod   -->> module maintenance  : first we do "go mod init" to initialize the mod file 
+. go work  -->> workspace maintenance
+. go run   -->> compile and run go program
+. go tool  -->> run specified go tool
+. go version  -->> print GO packages
+. go vet  -->> report likely mistakes in packages

@@ -1,0 +1,17 @@
+// --------------------------------------- Golang Intro -----------------------------------------
+
+// Introduce at 2007 by rob pike, robert griesemer, ken thompson at google
+// Open source in 2009.
+// Syntax is similar like C language.
+// It is a procedural language and static typed compiled programming language.
+// Supports concurrency , run processes by multiple threaded.
+// It has a garbage collector
+
+// Disadvantages :- doesn't support generics, OOPs not included
+
+// check the version :- go version
+// go version go1.22.5 windows/amd64
+
+// go help
+// go env  --->> Environment variable of Golang
+
