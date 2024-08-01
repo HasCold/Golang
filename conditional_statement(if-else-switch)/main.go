@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 const (
-	first = iota // 0
+	first = iota // iota contains the value related to the indexing like at 1 index iota value will be 1
 	second
 	third = 'a' // This will convert 'a' according to ASCII code 97 = a
 	forth
