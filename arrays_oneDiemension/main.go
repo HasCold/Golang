@@ -48,4 +48,34 @@ func main() {
 	fmt.Println(q1 == q2)
 	fmt.Println(q2 == q3)
 	fmt.Println(q1 == q3)
+
+	// --------------------------------- Array in Depth ------------------------------
+	// How to copy array using refernces and without reference
+	// Pass array to function
+
+	array1 := [5]int{0, 10, 2, 3, 4}
+
+	// Without reference :- Means both variable has their own memory address location
+	// array2 := array1
+	// fmt.Println("Simple array value copy :-", array2)
+
+	// array2[0] = 12
+	// fmt.Println("After changing the value of array  :-", array2)
+	// fmt.Println("After changing the value of array  :-", array1)
+
+	// With reference :- Means both variable has access of same memory address location
+	// So it will direclty impact on our actual variable
+	array2 := &array1 // Both have access the same memory address location
+	array2[1] = 100
+
+	fmt.Println("After changing the value of array  :-", *array2)
+	fmt.Println("After changing the value of array  :-", array1)
+
+	testArrayPassing(array1)
+}
+
+func testArrayPassing(arr [5]int) {
+	for i := 0; i < len(arr); i++ {
+		fmt.Println(i)
+	}
 }
