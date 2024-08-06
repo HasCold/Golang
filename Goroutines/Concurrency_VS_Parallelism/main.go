@@ -4,7 +4,7 @@ package main
 
 // Concurrency :-
 // . Suppose a Task have multiple operations so in concurrency will run our operations and also manages the operations
-// . One task is completed by multiple processes individually / One task is depend on multiple processes
+// . One task is completed by multiple processes individually on single core processor / One task is depend on multiple processes
 
 // Characteristics:
 // . Task Management: Concurrency involves managing multiple tasks by switching between them, often so quickly that it appears they are running simultaneously.
@@ -15,7 +15,7 @@ package main
 
 // Parallelism :-
 // . Suppose a Task have multiple operations so in parallelism will run our operations but not manages the operations
-// . One task is completed by multiple processes simultaneously and that will also not manages the task.
+// . One task is completed by multiple processes simultaneously on a multi-core processors and that will also not manages the task.
 
 // Characteristics:
 // . Simultaneous Execution: Parallelism requires hardware with multiple cores or processors to truly run tasks at the same time.
