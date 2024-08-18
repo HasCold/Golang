@@ -52,7 +52,10 @@ func sw_case() {
 	a = "Some Data"
 
 	// In Go, type assertions and type switches are used to determine the dynamic type of an interface value. Demonstrates a type switch, which allows you to handle different types that an interface can hold in a type-safe way.
-	switch t := a.(type) { // it is a short hand method to declare the variable
+
+	// In this case, a.(type) is used in the switch statement to identify the type of the value stored in a.
+	// The variable t is the value stored in a, and it can be used within the corresponding case block.
+	switch t := a.(type) {
 	case int64:
 		fmt.Println("Type is an integer : ", t)
 	case float64:

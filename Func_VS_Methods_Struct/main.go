@@ -2,10 +2,15 @@ package main
 
 import "fmt"
 
+//  Important to Understand the Methods in Golang Deeply :- https://golangdocs.com/methods-in-golang
+
+// Receiver types
+// There are two types of receivers that are available in Go. The value receivers and the pointer receivers. Here is an example showing both of them.
+
 type data int
 type fl float32
 
-func (v1 data) div(v2 data, v3 fl) fl {
+func (v1 data) div(v2 data, v3 fl) fl { // Value Recievers
 	return fl(v1/v2) + v3
 }
 
@@ -16,7 +21,7 @@ type user struct {
 	num   int
 }
 
-func (u *user) correctEmail(newEmail, newName string) {
+func (u *user) correctEmail(newEmail, newName string) { // Pointer Recievers
 	u.email = newEmail
 	u.name = newName
 }
