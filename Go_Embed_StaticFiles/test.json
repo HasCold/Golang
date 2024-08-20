@@ -1,0 +1,34 @@
+{
+    "user": {
+      "id": 12345,
+      "name": "John Doe",
+      "email": "johndoe@example.com",
+      "profile": {
+        "age": 30,
+        "location": "New York, USA",
+        "interests": ["programming", "blockchain", "music"]
+      }
+    },
+    "recent_activities": [
+      {
+        "type": "login",
+        "timestamp": "2024-08-20T10:00:00Z",
+        "device": "laptop",
+        "location": "New York, USA"
+      },
+      {
+        "type": "purchase",
+        "timestamp": "2024-08-19T18:30:00Z",
+        "item": "JavaScript Programming Book",
+        "amount": 29.99,
+        "currency": "USD"
+      },
+      {
+        "type": "post",
+        "timestamp": "2024-08-18T15:45:00Z",
+        "content": "Learning about gRPC and it's really interesting!",
+        "platform": "LinkedIn"
+      }
+    ]
+  }
+ 
