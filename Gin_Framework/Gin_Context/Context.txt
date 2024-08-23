@@ -1,0 +1,26 @@
+Understanding context.Context in Go :-
+First, let’s clarify what context.Context is and why it’s important.
+
+1. context.Context is a Go standard library type that carries deadlines, cancellation signals, and other request-scoped values across API boundaries and between processes.
+
+2. It’s primarily used to manage the lifecycle of a request or operation, particularly in concurrent or long-running operations. For instance, it can be used to:
+. Cancel an operation if it's taking too long.
+. Set a deadline for an operation to complete.
+. Pass values that might be needed by the operation (e.g., user authentication tokens).
+
+
+---------------------------- Example Use Case -------------------------------------
+Let’s say you’re making a database query that might take a long time. Instead of using context.TODO(), you might want to use context.WithTimeout() to ensure that the query is canceled if it takes longer than 5 seconds:
+
+ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+defer cancel()
+
+result, err := orgCollection.InsertOne(ctx, data)
+if err != nil {
+    fmt.Println("Error inserting data:", err)
+}
+
+Summary :- 
+. context.TODO() is used when you need a context but don’t have a specific one to use at the moment. It’s a placeholder, signaling that you may replace it later.
+. Contexts are crucial in Go for managing the lifecycle of operations, especially in concurrent or network-based applications, like database operations.
+. In production code, you would typically replace context.TODO() with a more specific context that includes timeouts, cancellation, or other request-scoped data.

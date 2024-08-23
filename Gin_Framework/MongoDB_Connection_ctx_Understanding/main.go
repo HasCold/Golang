@@ -32,7 +32,6 @@ func connectDB() {
 
 	// Golang in-built package context
 	// In Context has some information that may be required to our mongoDB or functions or handlers or routers
-	// Below we are doing the cancellation operations of the parent context
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel() // This ensures that the cancel function is called to release the resources associated with the context, even if an early return occurs due to an error.
 
