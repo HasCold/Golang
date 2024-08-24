@@ -77,7 +77,7 @@ func init() { // Init function will mainly run before the main goroutine functio
 // unique ID :- primitive.ObjectID
 // MongoDB stores data in BSON (Binary JSON) format which is binary-encoded serialization format used to store and transfer data in MongoDB same like when we communicate with the client so we do mostly in JSON
 type User struct {
-	ID    primitive.ObjectID `bson:"_id"`
+	ID    primitive.ObjectID `bson:"_id,omitempty"` // omitempty means if this field is avaible so OK otherwise there will be no problem
 	Name  string             `bson:"name"`
 	Email string             `bson:"email"`
 }
@@ -95,6 +95,33 @@ func main() {
 	data, err := Mgr.GetAll()
 	fmt.Println("The data we get from the GET ALL Operation :-", data, err)
 
+	// Delete record from DB
+	id := "66c982c1aee1294df3544819"
+	objectID, err := primitive.ObjectIDFromHex(id) // We are converting the id string into ObjectID primitive form
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	err = Mgr.DeleteData(objectID)
+	if err != nil {
+		log.Fatal(err) // when critical errors encounter in the program which stops the continuation of the program so we have to log the error messages and then immediately terminates the program with a non-zero exit status code
+	}
+
+	//
+	// Update the Record
+
+	ObjectID, err := primitive.ObjectIDFromHex(id) // we are converting the id string into primitive ObjectID form
+	if err != nil {
+		fmt.Println(err)
+	}
+	u.ID = ObjectID
+	u.Name = "test"
+	u.Email = "test@gmail.com"
+	err = Mgr.UpdateData(u)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // If want to understand more about methods in golang then look at the  Mutex_Lock_Unlock section
@@ -143,6 +170,29 @@ func (mgr *manager) GetAll() (data []User, err error) { // mgr hold a reference 
 	return data, nil
 }
 
+func (mgr *manager) DeleteData(id primitive.ObjectID) error {
+	orgCollection := mgr.Connection.Database("Go_Book").Collection("Golang_Collection") // Create the instance of DB
+	// bson.D{} -->> Order representation of Data
+	filter := bson.D{{"_id", id}, {"name", "go Hasan"}}
+
+	_, err := orgCollection.DeleteOne(context.TODO(), filter)
+	return err
+}
+
+func (mgr *manager) UpdateData(data User) error {
+	orgCollection := mgr.Connection.Database("Go_Book").Collection("Golang_Collection")
+
+	// D is an ordered representation of a BSON document.
+	filter := bson.D{{"_id", data.ID}}
+	update := bson.D{{"$set", data}}
+
+	updateResult, err := orgCollection.UpdateOne(context.TODO(), filter, update)
+	fmt.Println("The updated result from mongoDB :- ", updateResult)
+
+	return err
+}
+
+// ----------------------------------------------------------------------------------------------------------------------
 // Mgr = &manager{Connection: client, Ctx: ctx, Cancel: cancel}
 
 // 1. Pointer to Struct (&manager): The expression &manager{...} creates a pointer to a manager struct.

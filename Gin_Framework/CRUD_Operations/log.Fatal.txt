@@ -1,0 +1,16 @@
+-------------------------------------------- log.Fatal -----------------------------------------------
+
+Purpose:
+Logging Critical Errors: log.Fatal() is used when you encounter a critical error that should prevent the program from continuing. It logs an error message and then immediately terminates the program with a non-zero exit status.
+
+
+When to Use:
+
+1. Unrecoverable Errors: Use log.Fatal() when your program cannot proceed due to an error, and there's no sensible way to handle it gracefully. Examples include:
+. Failing to connect to a critical external service (e.g., a database).
+. An essential resource or configuration file is missing.
+. A critical operation (like decoding a necessary piece of data) fails and the program cannot continue without it.
+
+2. Initialization Failures: If an error occurs during initialization (e.g., setting up a server, connecting to a database), and you cannot safely continue, use log.Fatal() to halt the program.
+
+3. Debugging Critical Issues: During development, you might use log.Fatal() to quickly identify and fix critical errors that would otherwise cause the program to behave unpredictably.
