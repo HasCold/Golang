@@ -1,0 +1,17 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is sample",
+        "title": "Swagger Gin Config",
+        "contact": {
+            "name": "Hasan",
+            "url": "http://www.swagger.io/support",
+            "email": "hasantest@swagger.io"
+        },
+        "license": {},
+        "version": "1.0"
+    },
+    "host": "localhost:5000",
+    "basePath": "/api/v1",
+    "paths": {}
+}

@@ -1,0 +1,13 @@
+basePath: /api/v1
+host: localhost:5000
+info:
+  contact:
+    email: hasantest@swagger.io
+    name: Hasan
+    url: http://www.swagger.io/support
+  description: This is sample
+  license: {}
+  title: Swagger Gin Config
+  version: "1.0"
+paths: {}
+swagger: "2.0"
