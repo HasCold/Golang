@@ -2,12 +2,15 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive" // Import the primitive package
 	"go.mongodb.org/mongo-driver/mongo"
@@ -89,15 +92,140 @@ func init() { // Init function will mainly run before the main goroutine functio
 	connectDB()
 }
 
+type jwtWrapper struct {
+	SecretKey       string
+	Issuer          string
+	ExpirationHours int64
+}
+
+// jwt adds email as a claim to the token
+type JwtClaim struct {
+	Email string
+	jwt.RegisteredClaims
+}
+
+func (j *jwtWrapper) generateToken(email string) (signedToken string, err error) { // j is a pointer to the jwtWrapper struct
+	// Creates a pointer to a JwtClaim which further holds the reference
+	claims := &JwtClaim{
+		Email: email,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(j.ExpirationHours) * time.Hour)),
+			Issuer:    j.Issuer,
+		},
+	}
+
+	// Now we are using SHA-256 method
+	// NewWithClaims creates a new Token with the specified signing method and claims.
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	// SignedString creates and returns a complete, signed JWT. The token is signed using the SigningMethod specified in the token.
+	signedToken, err = token.SignedString([]byte(j.SecretKey))
+	if err != nil {
+		fmt.Println("Error in signing token :- ", err)
+		return
+	}
+	return
+}
+
+// Validate Token validate the JWT token
+func (j *jwtWrapper) validateToken(signedToken string) (claims *JwtClaim, err error) {
+	token, err := jwt.ParseWithClaims(
+		signedToken,
+		&JwtClaim{},
+		func(token *jwt.Token) (interface{}, error) {
+			return []byte(j.SecretKey), nil
+		},
+	)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// we are just checking the token time in this function
+	claims, ok := token.Claims.(*JwtClaim)
+	if !ok {
+		err = errors.New("Couldn't parse the claims")
+		return
+	}
+
+	if claims.ExpiresAt.Time.Before(time.Now()) {
+		err = errors.New("JWT is expired")
+		return
+	}
+	return
+}
+
+// Auhz authenicate token and authorize user
+func Authz() gin.HandlerFunc {
+	// Closure function
+	return func(c *gin.Context) {
+		clientToken := c.Request.Header.Get("Authorization")
+		if clientToken == "" {
+			c.JSON(403, "No authorization header provided")
+			c.Abort()
+			return
+		}
+
+		extractedToken := strings.Split(clientToken, "Bearer ")
+
+		if len(extractedToken) == 2 {
+			clientToken = strings.TrimSpace(extractedToken[1])
+		} else {
+			c.JSON(400, "Incorrect format of Authorization Token")
+			c.Abort()
+			return
+		}
+
+		jwtWrapper1 := jwtWrapper{
+			SecretKey: "esfsdfkpskodkf234234243243",
+			Issuer:    "admin",
+		}
+
+		// jwtWrapper can invoked the method directly becuase it matches the reciever_type of method
+		claims, err := jwtWrapper1.validateToken(clientToken)
+		if err != nil {
+			c.JSON(401, err.Error())
+			c.Abort()
+			return
+		}
+		c.Set("email", claims.Email)
+		c.Next() // Next should be used only inside middleware. It executes the pending handlers in the chain inside the calling handler
+
+	}
+}
+
 func main() {
 	r := gin.Default() // Default returns the gin engine instance
 
-	r.POST("/post-data", insertData)
 	r.GET("/get-data", getAll)
+	r.GET("/token", getToken)
+	r.Use(Authz()) // Pass the middleware in Use method
+	// Below are the three api's will authorize first from the middleware
+	r.POST("/post-data", insertData)
 	r.PUT("/put-data", updateData)
 	r.DELETE("/del-data", delData)
 
 	r.Run(":5000")
+}
+
+func getToken(c *gin.Context) {
+	// jwtWrapper1 can invoked the method directly becuase it matches the reciever_type of method
+	jwtWrapper1 := jwtWrapper{
+		SecretKey:       "esfsdfkpskodkf234234243243",
+		Issuer:          "admin",
+		ExpirationHours: 48,
+	}
+
+	signedToken, err := jwtWrapper1.generateToken("test@gmail.com")
+	if err != nil {
+		errors.New(err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"token":   signedToken,
+	})
+
 }
 
 // Passing *gin.Context as a pointer is efficient because it avoids copying the entire context structure, which could be large. It also ensures that any modifications to the context (e.g., setting a response header) are reflected across all parts of the code handling the request.
