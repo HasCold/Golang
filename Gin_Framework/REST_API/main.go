@@ -200,6 +200,12 @@ func main() {
 
 	r.GET("/get-data", getAll)
 	r.GET("/token", getToken)
+
+	// Login and SignUp functionality
+	r.POST("/login", login)
+	r.POST("/signup", signUp)
+	r.GET("/map-data", getMapData)
+
 	r.Use(Authz()) // Pass the middleware in Use method
 	// Below are the three api's will authorize first from the middleware
 	r.POST("/post-data", insertData)
@@ -207,6 +213,95 @@ func main() {
 	r.DELETE("/del-data", delData)
 
 	r.Run(":5000")
+}
+
+type user struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+var users map[string]user // map[key] value
+
+func signUp(c *gin.Context) { // c is a pointer to a Gin Context
+	var u user
+	if c.Request.Method != "POST" {
+		c.JSON(http.StatusMethodNotAllowed, gin.H{"message": "Request mehtod is invalid"})
+	}
+
+	err := c.BindJSON(&u) // Bind the user struct var
+	if err != nil {
+		errors.New(err.Error())
+		return
+	}
+
+	_, ok := users[u.Email]
+	if ok {
+		c.JSON(http.StatusConflict, gin.H{
+			"message": "Your are already Signed In !",
+		})
+		return
+	}
+
+	users = map[string]user{
+		u.Email: u,
+	}
+	fmt.Println("The users mapping :- ", users)
+
+	jwtWrapper1 := jwtWrapper{
+		SecretKey:       "esfsdfkpskodkf234234243243",
+		Issuer:          "admin",
+		ExpirationHours: 48,
+	}
+
+	signedToken, jwtErr := jwtWrapper1.generateToken(u.Email)
+	if jwtErr != nil {
+		fmt.Println(jwtErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": signedToken,
+	})
+}
+
+func login(c *gin.Context) {
+	var u user
+	if c.Request.Method != "POST" {
+		c.JSON(http.StatusMethodNotAllowed, gin.H{"message": "Request mehtod is invalid"})
+	}
+
+	err := c.BindJSON(&u)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	resp, ok := users[u.Email]
+	if !ok {
+		c.JSON(http.StatusConflict, gin.H{
+			"message": "Please first do the sign up !",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": resp,
+	})
+
+}
+
+func getMapData(c *gin.Context) {
+
+	if c.Request.Method != "GET" {
+		c.JSON(http.StatusMethodNotAllowed, gin.H{"message": "Request mehtod is invalid"})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": users,
+	})
 }
 
 func getToken(c *gin.Context) {
