@@ -115,6 +115,7 @@ func (j *jwtWrapper) generateToken(email string) (signedToken string, err error)
 	}
 
 	// Now we are using SHA-256 method
+	// The claims created earlier are attached to this token.
 	// NewWithClaims creates a new Token with the specified signing method and claims.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -129,10 +130,10 @@ func (j *jwtWrapper) generateToken(email string) (signedToken string, err error)
 
 // Validate Token validate the JWT token
 func (j *jwtWrapper) validateToken(signedToken string) (claims *JwtClaim, err error) {
-	token, err := jwt.ParseWithClaims(
+	token, err := jwt.ParseWithClaims( //Parses the signed JWT (signedToken) with the expectation that it contains JwtClaim claims.
 		signedToken,
 		&JwtClaim{},
-		func(token *jwt.Token) (interface{}, error) {
+		func(token *jwt.Token) (interface{}, error) { // The function passed as a third argument returns the secret key used to sign the token, allowing the parsing function to verify the signature.
 			return []byte(j.SecretKey), nil
 		},
 	)
@@ -232,6 +233,14 @@ func getToken(c *gin.Context) {
 func insertData(c *gin.Context) { // c is a pointer to a gin Context struct
 	var d Data
 
+	if c.Request.Method != "POST" {
+		c.JSON(405, gin.H{
+			"success": false,
+			"message": "Request method is invalid",
+		})
+		return
+	}
+
 	fmt.Println("The coming JSON obj :-", d)
 	err := c.BindJSON(&d) // passing the reference of json data
 	if err != nil {
@@ -250,6 +259,10 @@ func insertData(c *gin.Context) { // c is a pointer to a gin Context struct
 }
 
 func getAll(c *gin.Context) {
+	if email, ok := c.Get("email"); ok {
+		fmt.Println("The email get from response :- ", email)
+	}
+
 	respData, err := Mgr.GetAll()
 	if err != nil {
 		log.Fatal(err)
@@ -325,7 +338,7 @@ func (mgr *manager) Insert(data interface{}) error {
 	orgCollection := mgr.Connection.Database("REST_GO").Collection("golang") // create an instance of DB after making the connection
 	res, err := orgCollection.InsertOne(context.TODO(), data)                // when we don't know what context should we passed so then context.TODO()
 
-	fmt.Println("The response is :- ", res)
+	fmt.Println("The response is :- ", *res)
 	return err
 }
 
