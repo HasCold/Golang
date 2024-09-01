@@ -1,0 +1,14 @@
+
+1. Install the Protocol Buffer Compiler :-  https://grpc.io/docs/protoc-installation/
+2. Install extension :- vscode-proto
+
+protoc -->> check whether the compiler is installed or not.
+
+Install the plugins :- 
+1. go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+2. go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+
+Command to run the protocol buffer file :- protoc --go_out=. --go-grpc_out=. *.proto
+- Hello_grpc.pb.go  -->> Related to the Services file 
+- Hello.pb.go   -->>  Related to the Model file

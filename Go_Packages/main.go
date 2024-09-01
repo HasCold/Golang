@@ -42,3 +42,9 @@
 //    - **`github.com/google/uuid`**: A package for generating UUIDs in Go.
 
 // These packages cover a wide range of functionalities, from basic I/O and string manipulation to web development, database interactions, testing, and more. If you're developing in Go, you're likely to encounter and use many of these packages frequently.
+
+package main
+
+func main(){
+	
+}
