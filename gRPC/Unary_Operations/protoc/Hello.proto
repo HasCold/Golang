@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+// Command to run the protocol buffer file :- protoc --go_out=. --go-grpc_out=. *.proto
+// This command will generate two files one for modal or struct and second for services
+
+option go_package = "./";  // Path represents where auto generated files will be generate.
+
+message HelloRequest{
+    string SomeString = 20;
+}
+
+message HelloResponse{
+    string Reply = 100;
+}
+
+// gRPC is the extended version of rpc method
+service Example {
+    // rpc is a keyword which is used to define the rpc method
+    rpc ServerReply(HelloRequest) returns (HelloResponse);
+}
