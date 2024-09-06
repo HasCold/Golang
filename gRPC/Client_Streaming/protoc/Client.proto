@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option go_package = "./"; // Path represents where auto generated files will be generated 
+
+message HelloRequest{
+    string SomeString = 1;
+}
+
+message HelloResponse {
+    string Reply = 1;
+}
+
+service Example {
+    // rpc is a keyword which is used to define the services of gRPC
+    // stream --> Means our data is transmit in the small packets or chunks
+    rpc ServerReply(stream HelloRequest) returns (HelloResponse);
+}
+
+// Command to run the protocol buffer file :- protoc --go_out=. --go-grpc_out=. *.proto
+// - Hello_grpc.pb.go  -->> Related to the Services file 
+// - Hello.pb.go   -->>  Related to the Model file
+
+// In Protocol Buffers (protobuf), assigning a default value to fields like SomeString and Reply is not strictly necessary, especially if you're comfortable with the default behavior

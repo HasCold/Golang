@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
-	proto "unary_operat/protoc" // Alias Keyword mention
+	proto "unary_operat/Unary_Operations/protoc" // Alias Keyword mention
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
