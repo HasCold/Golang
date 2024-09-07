@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "Launch Package",
             "type": "go",
@@ -12,7 +13,7 @@
             "program": "${workspaceFolder}"
 
             // If you want to run the debugger in a specified file and folder then edit the program accordingly 
-            // "program": "Delve_Debugger/main.go",
+            // "program": "gRPC/Bi-Directional_Streaming/server/server.go",
         }
     ]
 }

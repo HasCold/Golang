@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "./";   // Path represents where auto generated files will be generated 
+
+message UploadRequest {
+    string FilePath = 1;
+    bytes chunks = 2;
+}
+
+message UploadResponse {
+    int64 FileSize = 1;
+    string message = 2;
+}
+
+service StreamUpload {
+    // rpc is a keyword used to define the services in gRPC
+    rpc Upload(stream UploadRequest) returns (UploadResponse);
+}
