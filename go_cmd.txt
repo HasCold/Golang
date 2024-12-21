@@ -1,0 +1,7 @@
+. go mod init <module-name>  // first we do "go mod init" to initialize the mod file 
+. go mod tidy  //  Install all the packages dependency related to our code
+
+
+. go get -u <github-package-url>  // to install the package locally
+
+. go install <github-package-url>  // to install the package globally 
