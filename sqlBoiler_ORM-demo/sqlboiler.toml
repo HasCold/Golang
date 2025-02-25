@@ -1,0 +1,14 @@
+output   = "models"
+wipe     = true
+no-tests = true
+add-enum-types = true
+
+[mysql]
+dbname = "institute"
+host = "localhost"
+port = 3306
+user = "root"
+pass = "Hasan"
+sslmode = "false"  # MySQL doesn't really use this, but you can include it.
+tinyint_as_int = true
+blacklist      = ["student_course", "inst_info", "courses", "students"]  # Blacklist the ones you don't want
