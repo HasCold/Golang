@@ -1,0 +1,25 @@
+hexagonal-architecture/
+│── cmd/                # Application entry point
+│── internal/
+│   ├── core/           # Business logic (Domain Layer)
+│   │   ├── entity.go   # Defines domain entities
+│   │   ├── service.go  # Business logic (use cases)
+│   ├── ports/          # Interfaces (Abstraction Layer)
+│   │   ├── repository.go # Port (interface) for storage
+│   │   ├── service.go    # Port (interface) for user service
+│   ├── adapters/       # Implementations (Infrastructure)
+│   │   ├── postgres.go # Adapter for PostgreSQL
+│   │   ├── inmem.go    # Adapter for in-memory DB
+│── main.go             # Application bootstrap
+
+----------------------------------------------------------------------------------------------------------------------------
+
+SOLID Principle :- 
+ Key Takeaways
+✅ SOLID Principles Applied:
+
+SRP (Single Responsibility): Each layer has a single job.
+OCP (Open-Closed): Can add new adapters (e.g., MongoDB) without modifying core logic.
+LSP (Liskov Substitution): Different databases (Postgres, In-memory) can replace each other without breaking the system.
+ISP (Interface Segregation): Ports provide specific contracts (no unnecessary methods).
+DIP (Dependency Inversion): Business logic does not depend on concrete implementations.
