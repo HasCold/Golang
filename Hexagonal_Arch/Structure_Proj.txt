@@ -23,3 +23,6 @@ OCP (Open-Closed): Can add new adapters (e.g., MongoDB) without modifying core l
 LSP (Liskov Substitution): Different databases (Postgres, In-memory) can replace each other without breaking the system.
 ISP (Interface Segregation): Ports provide specific contracts (no unnecessary methods).
 DIP (Dependency Inversion): Business logic does not depend on concrete implementations.
+
+
+Explanation :- https://chatgpt.com/share/67c0c4dd-fd74-8002-8314-80154f0f6650

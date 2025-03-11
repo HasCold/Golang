@@ -1,0 +1,146 @@
+version: '3.8'
+
+services:
+  controller-1:
+    image: apache/kafka:latest
+    container_name: controller-1
+    networks:
+      - kafka-network
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: controller
+      KAFKA_LISTENERS: CONTROLLER://:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    volumes:
+    - kafka-data-controller-1:/var/lib/kafka/data
+  
+  controller-2:
+    image: apache/kafka:latest
+    container_name: controller-2
+    networks:
+      - kafka-network
+    environment:
+      KAFKA_NODE_ID: 2
+      KAFKA_PROCESS_ROLES: controller
+      KAFKA_LISTENERS: CONTROLLER://:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    volumes:
+      - kafka-data-controller-2:/var/lib/kafka/data
+
+  controller-3:
+    image: apache/kafka:latest
+    container_name: controller-3
+    networks:
+      - kafka-network
+    environment:
+      KAFKA_NODE_ID: 3
+      KAFKA_PROCESS_ROLES: controller
+      KAFKA_LISTENERS: CONTROLLER://:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    volumes:
+    - kafka-data-controller-3:/var/lib/kafka/data
+
+  broker-1:
+    image: apache/kafka:latest
+    container_name: broker-1
+    networks:
+     - kafka-network
+    ports:
+      - "29092:9092"
+    environment:
+      KAFKA_NODE_ID: 4
+      KAFKA_PROCESS_ROLES: broker
+      KAFKA_LISTENERS: 'PLAINTEXT://:9092,PLAINTEXT_EXTERNAL://:29092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker-1:9092,PLAINTEXT_EXTERNAL://localhost:29092'
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    depends_on:
+      - controller-1
+      - controller-2
+      - controller-3
+    volumes:
+    - kafka-data-broker-1:/var/lib/kafka/data
+
+  broker-2:
+    image: apache/kafka:latest
+    container_name: broker-2
+    ports:
+     - "39092:9092"
+    networks:
+      - kafka-network
+    environment:
+      KAFKA_NODE_ID: 5
+      KAFKA_PROCESS_ROLES: broker
+      KAFKA_LISTENERS: 'PLAINTEXT://:9092,PLAINTEXT_EXTERNAL://:39092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker-2:9092,PLAINTEXT_EXTERNAL://localhost:39092'
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    depends_on:
+      - controller-1
+      - controller-2
+      - controller-3
+    volumes:
+    - kafka-data-broker-2:/var/lib/kafka/data
+
+  broker-3:
+    image: apache/kafka:latest
+    container_name: broker-3
+    networks:
+      - kafka-network
+    ports:
+      - "49092:9092"
+    environment:
+      KAFKA_NODE_ID: 6
+      KAFKA_PROCESS_ROLES: broker
+      KAFKA_LISTENERS: 'PLAINTEXT://:9092,PLAINTEXT_EXTERNAL://:49092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker-3:9092,PLAINTEXT_EXTERNAL://localhost:49092'
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@controller-1:9093,2@controller-2:9093,3@controller-3:9093
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    depends_on:
+      - controller-1
+      - controller-2
+      - controller-3
+    volumes:
+    - kafka-data-broker-3:/var/lib/kafka/data
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    container_name: kafdrop
+    restart: unless-stopped
+    depends_on:
+      - broker-1
+      - broker-2
+      - broker-3
+    environment:
+      KAFKA_BROKER_CONNECT: "broker-1:9092,broker-2:9092,broker-3:9092"
+    ports:
+      - "9000:9000"
+    networks:
+      - kafka-network
+
+volumes:
+  kafka-data-controller-1:
+  kafka-data-controller-2:
+  kafka-data-controller-3:
+  kafka-data-broker-1:
+  kafka-data-broker-2:
+  kafka-data-broker-3:
+
+networks:
+  kafka-network:
+
+# - kafka-data:/var/lib/kafka/data
+# kafka-data is the named volume created and managed by Docker.
+# /var/lib/kafka/data is the directory inside the Kafka container where Kafka stores its log data (topics, partitions, and messages).
