@@ -5,6 +5,7 @@ func main() {
 }
 
 // Goroutines in Go are considered **lightweight threads** when compared to traditional threads used in other programming languages like Java, C++, or Python. There are several key reasons for this, primarily related to their design, scheduling, memory usage, and management.
+// Goroutines will be managed by go runtime scheduler.
 
 // ### Key Reasons Why Goroutines are Lightweight
 
